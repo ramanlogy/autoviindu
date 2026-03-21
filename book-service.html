@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>AutoViindu – Book a Service</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#1A6B2A;--brand-d:#145521;--brand-l:#EEF7F0;--brand-ll:#F4FAF5;
+  --gold:#B8920A;--gold-d:#9A7A08;--gold-l:#FBF5E0;--gold-ll:#FEFAED;
+  --ink:#0D0D14;--ink2:#1E2030;--ink3:#4A5168;--ink4:#8891A8;--ink5:#B8BECC;
+  --s0:#FFFFFF;--s1:#F7F8FB;--s2:#F0F2F6;--s3:#E8EBF2;
+  --border:#E2E5EE;--border-d:#D0D4E0;
+  --sh-xs:0 1px 3px rgba(0,0,0,.06);--sh-sm:0 2px 10px rgba(0,0,0,.07);
+  --sh-md:0 8px 28px rgba(0,0,0,.10);--sh-lg:0 20px 56px rgba(0,0,0,.14);
+  --r4:4px;--r8:8px;--r12:12px;--r16:16px;--r20:20px;--rpill:999px;
+  --hh:72px;--ease:.22s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--s0);overflow-x:hidden;}
+a{cursor:pointer;}
+button{cursor:pointer;font-family:'Outfit',sans-serif;border:none;outline:none;}
+input,select,textarea{font-family:'Outfit',sans-serif;}
+::selection{background:rgba(26,107,42,.15);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.9)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes chipBounce{0%{transform:scale(1)}35%{transform:scale(1.1)}65%{transform:scale(.95)}100%{transform:scale(1)}}
+@keyframes ringPop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.wrap{max-width:1300px;margin:0 auto;padding:0 24px;}
+@media(max-width:600px){.wrap{padding:0 16px;}}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--ink);color:rgba(255,255,255,.4);font-size:12px;font-weight:500;padding:7px 0;}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.tb-group{display:flex;align-items:center;gap:18px;}
+.tb-item{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.4);transition:color var(--ease);}
+.tb-item:hover{color:rgba(255,255,255,.8);}
+.tb-sep{width:1px;height:12px;background:rgba(255,255,255,.1);}
+@media(max-width:640px){.tb-item.hide-sm{display:none;}}
+
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:950;background:rgba(255,255,255,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);box-shadow:var(--sh-xs);}
+.hdr-inner{display:flex;align-items:center;gap:20px;height:var(--hh);}
+.logo-mark{height:46px;display:flex;align-items:center;}
+.hdr-pill{margin-left:auto;display:inline-flex;align-items:center;gap:7px;background:var(--brand-ll);border:1px solid rgba(26,107,42,.18);border-radius:var(--rpill);padding:5px 14px;font-size:12px;font-weight:700;color:var(--brand);}
+.hdr-pill-dot{width:6px;height:6px;background:var(--brand);border-radius:50%;animation:pulse 2s infinite;}
+
+/* ── HERO ── */
+.booking-hero{background:linear-gradient(160deg,#060D08 0%,#091209 45%,#0D1A10 100%);position:relative;overflow:hidden;padding:52px 0 80px;}
+.hero-mesh{position:absolute;inset:0;background:radial-gradient(ellipse 700px 400px at 65% 50%,rgba(26,107,42,.14),transparent);pointer-events:none;}
+.hero-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.hero-fade{position:absolute;bottom:0;left:0;right:0;height:110px;background:linear-gradient(to top,var(--s0),transparent);pointer-events:none;}
+.hero-inner{position:relative;z-index:2;text-align:center;}
+.hero-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(184,146,10,.12);border:1px solid rgba(184,146,10,.26);border-radius:var(--rpill);padding:5px 14px 5px 10px;font-size:12px;font-weight:600;color:#D4AE30;margin-bottom:20px;}
+.hero-pill-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite;}
+.hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,7vw,72px);line-height:.95;color:#fff;letter-spacing:1px;margin-bottom:14px;}
+.hero-h1 .accent{color:var(--gold);}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.45);max-width:430px;margin:0 auto 10px;line-height:1.7;}
+
+/* ── PROGRESS BOX ── */
+.prog-wrap{max-width:520px;margin:-38px auto 0;position:relative;z-index:20;padding:0 24px;}
+.prog-box{background:var(--s0);border-radius:var(--r16);box-shadow:var(--sh-lg);border:1px solid var(--border);padding:20px 28px;}
+.prog-steps{display:flex;align-items:center;position:relative;}
+.prog-track{position:absolute;top:14px;left:18px;right:18px;height:2px;background:var(--s2);}
+.prog-fill{position:absolute;top:14px;left:18px;height:2px;background:linear-gradient(90deg,var(--brand),var(--gold));transition:width .55s cubic-bezier(.4,0,.2,1);}
+.prog-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;z-index:2;}
+.prog-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border-d);background:var(--s0);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800;color:var(--ink5);transition:all var(--ease);}
+.prog-step.done .prog-dot{background:var(--brand);border-color:var(--brand);color:#fff;}
+.prog-step.active .prog-dot{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 0 0 4px rgba(184,146,10,.18);}
+.prog-label{font-size:10px;font-weight:700;color:var(--ink5);text-transform:uppercase;letter-spacing:.5px;transition:color var(--ease);}
+.prog-step.active .prog-label{color:var(--gold);}
+.prog-step.done .prog-label{color:var(--ink4);}
+
+/* ── FORM AREA ── */
+.form-outer{max-width:680px;margin:0 auto;padding:32px 24px 80px;}
+
+/* ── STEP PANEL ── */
+.step-panel{display:none;}
+.step-panel.active{display:block;animation:fadeUp .3s ease both;}
+.step-eyebrow{font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.step-eyebrow::before{content:'';width:16px;height:2px;background:var(--gold);border-radius:2px;}
+.step-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4.5vw,38px);color:var(--ink);letter-spacing:.5px;line-height:1;margin-bottom:6px;}
+.step-sub{font-size:13.5px;color:var(--ink4);line-height:1.6;margin-bottom:28px;}
+
+/* ── SEC LABEL ── */
+.sec-label{font-size:10.5px;font-weight:800;color:var(--ink4);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px;margin-top:24px;display:flex;align-items:center;gap:6px;}
+.sec-label:first-of-type{margin-top:0;}
+.req{color:#EF4444;}
+.hint{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink5);font-size:10.5px;margin-left:2px;}
+
+/* ── SERVICE CARDS ── */
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:440px){.svc-grid{grid-template-columns:1fr;}}
+.svc-card{padding:18px;border:1.5px solid var(--border);border-radius:var(--r12);cursor:pointer;transition:all var(--ease);background:var(--s0);position:relative;-webkit-user-select:none;user-select:none;}
+.svc-card:hover{border-color:var(--brand);background:var(--brand-ll);transform:translateY(-2px);box-shadow:var(--sh-sm);}
+.svc-card.sel{border-color:var(--brand);background:var(--brand-ll);box-shadow:0 4px 16px rgba(26,107,42,.12);}
+.svc-check{position:absolute;top:10px;right:10px;width:20px;height:20px;background:var(--brand);border-radius:50%;display:none;align-items:center;justify-content:center;}
+.svc-card.sel .svc-check{display:flex;}
+.svc-icon{width:38px;height:38px;background:var(--s1);border-radius:var(--r8);display:flex;align-items:center;justify-content:center;color:var(--brand);margin-bottom:10px;transition:background var(--ease);}
+.svc-card.sel .svc-icon,.svc-card:hover .svc-icon{background:rgba(26,107,42,.1);}
+.svc-name{font-size:13.5px;font-weight:800;color:var(--ink);margin-bottom:2px;}
+.svc-sub{font-size:11.5px;color:var(--ink4);}
+
+/* ── URGENCY ── */
+.urg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.urg-opt{padding:14px 8px;border:1.5px solid var(--border);border-radius:var(--r12);cursor:pointer;transition:all var(--ease);background:var(--s0);text-align:center;-webkit-user-select:none;user-select:none;}
+.urg-opt:hover{border-color:var(--border-d);transform:translateY(-1px);}
+.urg-icon{width:28px;height:28px;margin:0 auto 6px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background var(--ease);}
+.urg-name{font-size:12.5px;font-weight:800;color:var(--ink2);}
+.urg-sub{font-size:10.5px;color:var(--ink5);margin-top:2px;}
+.urg-opt.sel-now{border-color:#EF4444;background:#FFF5F5;}
+.urg-opt.sel-now .urg-icon{background:#FEE2E2;color:#EF4444;}
+.urg-opt.sel-soon{border-color:var(--brand);background:var(--brand-ll);}
+.urg-opt.sel-soon .urg-icon{background:rgba(26,107,42,.1);color:var(--brand);}
+.urg-opt.sel-plan{border-color:#2563EB;background:#EFF6FF;}
+.urg-opt.sel-plan .urg-icon{background:#DBEAFE;color:#2563EB;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:9px 16px;border:1.5px solid var(--border);border-radius:var(--rpill);font-size:13px;font-weight:600;color:var(--ink3);background:var(--s0);cursor:pointer;transition:all var(--ease);-webkit-user-select:none;user-select:none;}
+.chip:hover{border-color:var(--brand-d);color:var(--brand);background:var(--brand-ll);}
+.chip.sel{background:var(--brand);border-color:var(--brand);color:#fff;box-shadow:0 2px 10px rgba(26,107,42,.22);}
+.chip svg{width:13px;height:13px;flex-shrink:0;}
+.bounce{animation:chipBounce .28s cubic-bezier(.36,.07,.19,.97) both;}
+
+/* ── INPUTS ── */
+.field{margin-bottom:16px;}
+.field-label{display:block;font-size:11px;font-weight:800;color:var(--ink4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;}
+.inp{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r8);font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--ink);background:var(--s1);outline:none;transition:all var(--ease);}
+.inp:hover{border-color:var(--border-d);}
+.inp:focus{border-color:var(--brand);background:var(--s0);box-shadow:0 0 0 3px rgba(26,107,42,.07);}
+.inp::placeholder{color:var(--ink5);}
+select.inp{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238891A8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px;padding-right:38px;}
+.inp-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:460px){.inp-row{grid-template-columns:1fr;}}
+.err-banner{font-size:12px;color:#EF4444;font-weight:600;margin-top:5px;display:none;}
+
+/* ── TOGGLE ── */
+.toggle-stack{display:flex;flex-direction:column;gap:8px;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--s1);border:1.5px solid var(--border);border-radius:var(--r12);cursor:pointer;transition:all var(--ease);-webkit-user-select:none;user-select:none;}
+.toggle-row:hover{border-color:var(--border-d);}
+.toggle-row.on{background:var(--brand-ll);border-color:var(--brand);}
+.toggle-info{flex:1;}
+.toggle-name{font-size:13.5px;font-weight:700;color:var(--ink);}
+.toggle-sub{font-size:11.5px;color:var(--ink4);margin-top:2px;}
+.toggle-row.on .toggle-sub{color:var(--brand-d);}
+.sw{width:44px;height:26px;background:var(--s3);border-radius:var(--rpill);position:relative;flex-shrink:0;transition:background var(--ease);}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.15);transition:transform var(--ease);}
+.toggle-row.on .sw{background:var(--brand);}
+.toggle-row.on .sw::after{transform:translateX(18px);}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:22px 0;}
+
+/* ── REVIEW ── */
+.review-block{background:var(--s1);border:1px solid var(--border);border-radius:var(--r12);overflow:hidden;margin-bottom:18px;}
+.review-row{display:flex;align-items:baseline;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border);}
+.review-row:last-child{border-bottom:none;}
+.review-key{font-size:10.5px;font-weight:800;color:var(--ink4);text-transform:uppercase;letter-spacing:.5px;min-width:88px;flex-shrink:0;}
+.review-val{font-size:13.5px;font-weight:500;color:var(--ink);}
+
+/* ── CHECKBOX ── */
+.check-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;cursor:pointer;-webkit-user-select:none;user-select:none;}
+.check-row input{display:none;}
+.cbox{width:18px;height:18px;border:1.5px solid var(--border-d);border-radius:var(--r4);background:var(--s0);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all var(--ease);}
+.check-row input:checked+.cbox{background:var(--brand);border-color:var(--brand);}
+.check-row input:checked+.cbox::after{content:'✓';color:#fff;font-size:11px;font-weight:900;}
+.check-text{font-size:13px;color:var(--ink2);line-height:1.55;}
+.check-text a{color:var(--brand);font-weight:700;text-decoration:underline;text-decoration-color:rgba(26,107,42,.3);}
+
+/* ── TRUST STRIP ── */
+.trust-strip{display:flex;gap:20px;flex-wrap:wrap;padding:16px 0 0;}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink4);}
+.trust-item svg{color:var(--brand);}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:10px;margin-top:26px;}
+.btn-back{padding:13px 20px;background:var(--s0);border:1.5px solid var(--border-d);border-radius:var(--r8);font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;color:var(--ink3);transition:all var(--ease);display:flex;align-items:center;gap:6px;}
+.btn-back:hover{border-color:var(--brand);color:var(--brand);}
+.btn-back svg{width:14px;height:14px;}
+.btn-next{flex:1;padding:14px 24px;background:var(--brand);color:#fff;border:none;border-radius:var(--r8);font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all var(--ease);box-shadow:0 4px 14px rgba(26,107,42,.28);}
+.btn-next:hover{background:var(--brand-d);transform:translateY(-1px);box-shadow:0 7px 22px rgba(26,107,42,.38);}
+.btn-next:active{transform:scale(.97);}
+.btn-submit{flex:1;padding:15px 24px;background:linear-gradient(135deg,var(--brand),#0D4A1B);color:#fff;border:none;border-radius:var(--r8);font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all var(--ease);box-shadow:0 6px 22px rgba(26,107,42,.35);letter-spacing:.2px;}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(26,107,42,.45);}
+.btn-submit:active{transform:scale(.97);}
+.btn-submit.loading{pointer-events:none;opacity:.7;}
+.spin{display:inline-block;animation:spin .7s linear infinite;}
+.btn-next svg,.btn-submit svg{width:16px;height:16px;}
+
+/* ── SUCCESS ── */
+.success-screen{display:none;text-align:center;padding:56px 24px 48px;}
+.success-screen.show{display:block;animation:fadeUp .4s ease both;}
+.success-ring{width:72px;height:72px;background:linear-gradient(135deg,var(--brand),#0D4A1B);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 28px rgba(26,107,42,.3);animation:ringPop .5s cubic-bezier(.36,.07,.19,.97) both .1s;}
+.success-eyebrow{font-size:11px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.success-eyebrow::before{content:'';width:14px;height:2px;background:var(--brand);border-radius:2px;}
+.success-eyebrow::after{content:'';width:14px;height:2px;background:var(--brand);border-radius:2px;}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--ink);letter-spacing:.5px;margin-bottom:10px;}
+.success-sub{font-size:14px;color:var(--ink3);line-height:1.7;margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto;}
+.ref-box{background:var(--brand-ll);border:1px solid rgba(26,107,42,.15);border-radius:var(--r12);padding:18px;margin-bottom:20px;display:inline-block;min-width:240px;}
+.ref-label{font-size:10.5px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
+.ref-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--ink);letter-spacing:3px;}
+.contact-box{background:var(--s1);border:1px solid var(--border);border-radius:var(--r12);padding:15px 20px;font-size:13px;color:var(--ink3);line-height:1.8;display:inline-block;}
+.contact-box strong{color:var(--ink);font-weight:800;}
+.btn-reset{margin-top:20px;padding:11px 28px;background:var(--s0);border:1.5px solid var(--border-d);border-radius:var(--r8);font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:700;color:var(--ink3);cursor:pointer;transition:all var(--ease);}
+.btn-reset:hover{border-color:var(--brand);color:var(--brand);}
+:root{
+  --brand:#1A6B2A;--brand-d:#145521;--brand-l:#EEF7F0;--brand-ll:#F4FAF5;
+  --gold:#B8920A;--gold-d:#9A7A08;--gold-l:#FBF5E0;--gold-ll:#FEFAED;
+  --go:#059669;--go-l:#ECFDF5;
+  --ink:#0D0D14;--ink2:#1E2030;--ink3:#4A5168;--ink4:#8891A8;--ink5:#B8BECC;
+  --s0:#FFFFFF;--s1:#F7F8FB;--s2:#F0F2F6;--s3:#E8EBF2;
+  --border:#E2E5EE;--border-d:#D0D4E0;
+  --sh-xs:0 1px 3px rgba(0,0,0,.06);--sh-sm:0 2px 10px rgba(0,0,0,.07);
+  --sh-md:0 8px 28px rgba(0,0,0,.10);--sh-lg:0 20px 56px rgba(0,0,0,.14);
+  --r4:4px;--r8:8px;--r12:12px;--r16:16px;--r20:20px;--rpill:999px;
+  --ease:.22s cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--s0);}
+.wrap{max-width:1300px;margin:0 auto;padding:0 24px;}
+@media(max-width:600px){.wrap{padding:0 16px;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+ 
+/* ════════════════════════════════════
+   1. BRAND GRID — collapse / expand
+   ════════════════════════════════════ */
+.brands-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;}
+@media(max-width:1100px){.brands-grid{grid-template-columns:repeat(5,1fr);}}
+@media(max-width:768px){.brands-grid{grid-template-columns:repeat(4,1fr);gap:8px;}}
+@media(max-width:480px){.brands-grid{grid-template-columns:repeat(3,1fr);}}
+ 
+.brand-card{background:var(--s0);border:1.5px solid var(--border);border-radius:var(--r12);padding:18px 10px 14px;text-align:center;cursor:pointer;transition:all var(--ease);}
+.brand-card:hover{border-color:var(--brand);box-shadow:0 8px 24px rgba(26,107,42,.1);transform:translateY(-3px);}
+.brand-logo{width:60px;height:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+.brand-name{font-size:12px;font-weight:700;color:var(--ink2);}
+.brand-count{font-size:10.5px;color:var(--ink5);margin-top:2px;}
+ 
+/* Hidden extra brands */
+.brands-extra{display:none;margin-top:12px;}
+.brands-extra .brands-grid{/* same grid */}
+.brands-extra.open{display:block;animation:fadeUp .3s ease both;}
+ 
+.btn-view-all-brands{
+  display:inline-flex;align-items:center;gap:7px;
+  margin-top:16px;padding:9px 22px;
+  border:1.5px solid var(--border-d);border-radius:var(--rpill);
+  font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:700;
+  color:var(--ink3);background:var(--s0);cursor:pointer;
+  transition:all var(--ease);
+}
+.btn-view-all-brands:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-ll);}
+.btn-view-all-brands .chevron{transition:transform var(--ease);}
+.btn-view-all-brands.open .chevron{transform:rotate(180deg);}
+ 
+/* ════════════════════════════════════
+   2. FAQ SECTION
+   ════════════════════════════════════ */
+.faq-sec{padding:64px 0;background:var(--s0);}
+@media(max-width:768px){.faq-sec{padding:44px 0;}}
+ 
+.sec-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;gap:16px;}
+.sec-label{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
+.sec-label-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.5px;color:var(--ink);line-height:1;}
+.sec-title .dim{color:var(--ink4);}
+.sec-sub{font-size:14px;color:var(--ink3);margin-top:6px;}
+ 
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:768px){.faq-grid{grid-template-columns:1fr;}}
+ 
+.faq-item{
+  background:var(--s0);
+  border:1px solid var(--border);
+  border-radius:var(--r12);
+  overflow:hidden;
+  cursor:pointer;
+  transition:all var(--ease);
+}
+.faq-item:hover{border-color:var(--brand);box-shadow:var(--sh-sm);}
+.faq-item.open{
+  border-color:var(--brand);
+  box-shadow:0 4px 18px rgba(26,107,42,.09);
+}
+ 
+.faq-q{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+  padding:16px 18px;
+  font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.45;
+}
+.faq-q-text{flex:1;}
+.faq-chevron{
+  flex-shrink:0;color:var(--ink5);
+  transition:transform var(--ease),color var(--ease);
+  margin-top:2px;
+}
+.faq-item.open .faq-chevron{transform:rotate(180deg);color:var(--brand);}
+ 
+.faq-a{
+  font-size:13px;color:var(--ink3);line-height:1.75;
+  padding:0 18px 16px;
+  display:none;
+  border-top:1px solid var(--brand-ll);
+  padding-top:12px;
+}
+.faq-item.open .faq-a{display:block;animation:fadeUp .2s ease both;}
+ 
+/* CTA link */
+.faq-more{
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;margin-top:24px;
+  font-size:13.5px;font-weight:700;color:var(--brand);
+  cursor:pointer;transition:gap var(--ease);
+}
+.faq-more:hover{gap:10px;}
+ 
+/* ════════════════════════════════════
+   3. QUICK FILTER BAR (CarDekho-style)
+   at top of cars grid section
+   ════════════════════════════════════ */
+.quick-filter-bar{
+  display:flex;gap:8px;flex-wrap:wrap;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+  margin-bottom:24px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.quick-filter-bar::-webkit-scrollbar{display:none;}
+.qf-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:var(--rpill);
+  border:1.5px solid var(--border);
+  font-size:12.5px;font-weight:600;color:var(--ink3);
+  background:var(--s0);cursor:pointer;white-space:nowrap;
+  transition:all var(--ease);flex-shrink:0;
+}
+.qf-chip:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-ll);}
+.qf-chip.act{background:var(--brand);border-color:var(--brand);color:#fff;}
+.qf-chip svg{width:13px;height:13px;}
+ 
+/* ════════════════════════════════════
+   DEMO LAYOUT BELOW (preview only)
+   ════════════════════════════════════ */
+.demo-page{min-height:100vh;padding-bottom:80px;}
+.demo-section{padding:60px 0;border-bottom:1px solid var(--border);}
+.demo-label{font-size:11px;font-weight:800;color:rgba(0,0,0,.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:28px;padding:6px 12px;background:var(--s2);border-radius:var(--r4);display:inline-block;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="tb-group">
+      <span class="tb-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.69 12 19.79 19.79 0 011.61 3.47 2 2 0 013.6 1.29h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.91 8.9a16 16 0 006.13 6.13l1.27-.94a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        +977-9701076240
+      </span>
+      <span class="tb-item hide-sm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Mon–Sat 9am–6pm
+      </span>
+      <span class="tb-item hide-sm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Kathmandu, Nepal
+      </span>
+    </div>
+    <div class="tb-group">
+      <span class="tb-sep"></span>
+      <a class="tb-item" href="javascript:history.back()">← Back to Site</a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="wrap hdr-inner">
+    <a class="logo-mark" href="javascript:history.back()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" fill="none" width="88" height="44">
+        <ellipse cx="100" cy="50" rx="94" ry="46" fill="white" stroke="url(#og)" stroke-width="3.5"/>
+        <ellipse cx="100" cy="50" rx="87" ry="39" fill="none" stroke="url(#og2)" stroke-width="1.2"/>
+        <defs>
+          <linearGradient id="og" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#C09818"/><stop offset="50%" stop-color="#C09818"/><stop offset="50%" stop-color="#1A6B2A"/><stop offset="100%" stop-color="#1A6B2A"/></linearGradient>
+          <linearGradient id="og2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#C09818" stop-opacity=".5"/><stop offset="50%" stop-color="#C09818" stop-opacity=".5"/><stop offset="50%" stop-color="#1A6B2A" stop-opacity=".5"/><stop offset="100%" stop-color="#1A6B2A" stop-opacity=".5"/></linearGradient>
+        </defs>
+        <g transform="translate(100,46) scale(0.52)" fill="none">
+          <path d="M-62 8 L-52 -10 L-20 -18 L20 -18 L52 -10 L62 8 L62 16 L-62 16 Z" fill="#C09818" opacity=".95"/>
+          <path d="M-18 -18 L-12 -32 L12 -32 L18 -18 Z" fill="#fff" opacity=".6"/>
+          <circle cx="-38" cy="18" r="10" fill="#C09818" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="-38" cy="18" r="4" fill="white" opacity=".6"/>
+          <circle cx="38" cy="18" r="10" fill="#C09818" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="38" cy="18" r="4" fill="white" opacity=".6"/>
+        </g>
+        <text x="100" y="73" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="13" font-style="italic" font-weight="700" fill="#1A6B2A" letter-spacing=".5">Autoviindu</text>
+        <text x="100" y="86" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" font-style="italic" fill="#C09818" letter-spacing=".3">"Your trust, our commitment"</text>
+      </svg>
+    </a>
+    <div class="hdr-pill">
+      <span class="hdr-pill-dot"></span>
+      Booking open — confirmed within 1 hr
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="booking-hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-dots"></div>
+  <div class="hero-fade"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-pill"><span class="hero-pill-dot"></span> AutoViindu Service Booking</div>
+    <h1 class="hero-h1">Book a <span class="accent">Service</span></h1>
+    <p class="hero-sub">3 quick steps. Under 90 seconds. We call to confirm within 1 hour.</p>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-box">
+    <div class="prog-steps">
+      <div class="prog-track"></div>
+      <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+      <div class="prog-step active" id="pd-1">
+        <div class="prog-dot">1</div>
+        <div class="prog-label">Service</div>
+      </div>
+      <div class="prog-step" id="pd-2">
+        <div class="prog-dot">2</div>
+        <div class="prog-label">Vehicle</div>
+      </div>
+      <div class="prog-step" id="pd-3">
+        <div class="prog-dot">3</div>
+        <div class="prog-label">Confirm</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="form-outer">
+
+  <!-- ══ STEP 1 ══ -->
+  <div class="step-panel active" id="step-1">
+    <div class="step-eyebrow">Step 1 of 3</div>
+    <div class="step-title">What do you need?</div>
+    <div class="step-sub">Pick a service — we handle the rest over the phone.</div>
+
+    <div class="sec-label">Service Type <span class="req">*</span></div>
+    <div class="svc-grid" id="svc-grid">
+
+      <div class="svc-card" data-val="Cosmetic Care" onclick="selectSvc(this)">
+        <div class="svc-check"><svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3" width="10" height="10" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="svc-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7" width="20" height="20" stroke-linecap="round"><path d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/></svg>
+        </div>
+        <div class="svc-name">Cosmetic Care</div>
+        <div class="svc-sub">Wash, polish, detailing, ceramic</div>
+      </div>
+
+      <div class="svc-card" data-val="Workshop" onclick="selectSvc(this)">
+        <div class="svc-check"><svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3" width="10" height="10" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="svc-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7" width="20" height="20" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div class="svc-name">Workshop</div>
+        <div class="svc-sub">Engine, AC, suspension, electrical</div>
+      </div>
+
+      <div class="svc-card" data-val="Roadside Assistance" onclick="selectSvc(this)">
+        <div class="svc-check"><svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3" width="10" height="10" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="svc-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7" width="20" height="20" stroke-linecap="round"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+        </div>
+        <div class="svc-name">Roadside Assist</div>
+        <div class="svc-sub">24/7 towing, jumpstart, tyre change</div>
+      </div>
+
+      <div class="svc-card" data-val="Smart Fitments" onclick="selectSvc(this)">
+        <div class="svc-check"><svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3" width="10" height="10" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="svc-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7" width="20" height="20" stroke-linecap="round"><path d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg>
+        </div>
+        <div class="svc-name">Smart Fitments</div>
+        <div class="svc-sub">GPS, dashcam, OBD, TPMS</div>
+      </div>
+
+    </div>
+    <div class="err-banner" id="err-svc">Please select at least one service</div>
+
+    <div class="sec-label" style="margin-top:26px;">How soon do you need this? <span class="req">*</span></div>
+    <div class="urg-grid">
+      <div class="urg-opt" id="urg-now" onclick="setUrgency('Immediate')">
+        <div class="urg-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>
+        </div>
+        <div class="urg-name">Immediate</div>
+        <div class="urg-sub">Need help now</div>
+      </div>
+      <div class="urg-opt sel-soon" id="urg-soon" onclick="setUrgency('This week')">
+        <div class="urg-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="urg-name">This week</div>
+        <div class="urg-sub">In a few days</div>
+      </div>
+      <div class="urg-opt" id="urg-plan" onclick="setUrgency('Planning')">
+        <div class="urg-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </div>
+        <div class="urg-name">Planning</div>
+        <div class="urg-sub">Just exploring</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-next" onclick="goStep(2)">
+        Continue
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </button>
+    </div>
+
+    <div class="trust-strip">
+      <div class="trust-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14" stroke-linecap="round"><path d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg>
+        Confirmed within 1 hour
+      </div>
+      <div class="trust-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        No payment upfront
+      </div>
+      <div class="trust-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.69 12 19.79 19.79 0 011.61 3.47 2 2 0 013.6 1.29h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.91 8.9a16 16 0 006.13 6.13l1.27-.94a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        We call you to confirm
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 2 ══ -->
+  <div class="step-panel" id="step-2">
+    <div class="step-eyebrow">Step 2 of 3</div>
+    <div class="step-title">Your Vehicle</div>
+    <div class="step-sub">Quick details so our team arrives prepared.</div>
+
+    <div class="sec-label">Fuel / Drive Type <span class="req">*</span></div>
+    <div class="chips" id="chips-fuel">
+      <div class="chip" data-group="fuel" data-val="Petrol" onclick="selectChip(this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg>
+        Petrol
+      </div>
+      <div class="chip" data-group="fuel" data-val="Diesel" onclick="selectChip(this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 22V3h10v10l2 2V22H3z"/><path d="M15 7h2a2 2 0 012 2v7a1 1 0 002 0v-9l-2-2"/></svg>
+        Diesel
+      </div>
+      <div class="chip" data-group="fuel" data-val="Electric" onclick="selectChip(this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Electric
+      </div>
+      <div class="chip" data-group="fuel" data-val="Hybrid" onclick="selectChip(this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5H18V15H4.5v-4.5zM3.75 18h15A2.25 2.25 0 0021 15.75v-6a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 9.75v6A2.25 2.25 0 003.75 18z"/></svg>
+        Hybrid
+      </div>
+    </div>
+    <div class="err-banner" id="err-fuel">Please select fuel type</div>
+
+    <div class="sec-label" style="margin-top:24px;">Make &amp; Model <span class="req">*</span></div>
+    <div class="inp-row">
+      <div class="field">
+        <label class="field-label">Brand</label>
+        <select class="inp" id="vbrand">
+          <option value="">Select brand</option>
+          <option>Toyota</option><option>Honda</option><option>Hyundai</option>
+          <option>Kia</option><option>Maruti Suzuki</option><option>BMW</option>
+          <option>Mercedes-Benz</option><option>Tesla</option><option>BYD</option>
+          <option>MG</option><option>Tata</option><option>Audi</option>
+          <option>Volkswagen</option><option>Nissan</option><option>Lexus</option>
+          <option>Jeep</option><option>Other</option>
+        </select>
+        <div class="err-banner" id="err-brand">Required</div>
+      </div>
+      <div class="field">
+        <label class="field-label">Model</label>
+        <input class="inp" id="vmodel" placeholder="e.g. Prius, City, Seltos">
+        <div class="err-banner" id="err-model">Required</div>
+      </div>
+    </div>
+    <div class="inp-row">
+      <div class="field">
+        <label class="field-label">Year <span class="hint">(optional)</span></label>
+        <select class="inp" id="vyear">
+          <option value="">Year</option>
+          <script>for(let y=2025;y>=2000;y--)document.write(`<option>${y}</option>`);</script>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Reg. Number <span class="hint">(optional)</span></label>
+        <input class="inp" id="vreg" placeholder="BA 1 PA 1234" style="text-transform:uppercase">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(1)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+        Back
+      </button>
+      <button class="btn-next" onclick="goStep(3)">
+        Continue
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 3 ══ -->
+  <div class="step-panel" id="step-3">
+    <div class="step-eyebrow">Step 3 of 3</div>
+    <div class="step-title">Almost Done</div>
+    <div class="step-sub">Just your contact — we'll call to confirm everything.</div>
+
+    <div class="inp-row">
+      <div class="field">
+        <label class="field-label">Full Name <span class="req">*</span></label>
+        <input class="inp" id="fname" placeholder="Your full name">
+        <div class="err-banner" id="err-fname">Required</div>
+      </div>
+      <div class="field">
+        <label class="field-label">Mobile Number <span class="req">*</span></label>
+        <input class="inp" id="fmobile" type="tel" placeholder="98XXXXXXXX" maxlength="10">
+        <div class="err-banner" id="err-fmobile">Enter a valid 10-digit number</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Address / Area <span class="req">*</span></label>
+      <input class="inp" id="faddress" placeholder="Street, area, city">
+      <div class="err-banner" id="err-faddress">Required</div>
+    </div>
+
+    <div class="sec-label" style="margin-top:24px;">Add-ons</div>
+    <div class="toggle-stack">
+      <div class="toggle-row" id="tog-pickup" onclick="toggleRow(this)">
+        <div class="toggle-info">
+          <div class="toggle-name">Pick-up &amp; Drop-off</div>
+          <div class="toggle-sub">We collect and return your vehicle</div>
+        </div>
+        <div class="sw"></div>
+      </div>
+      <div class="toggle-row" id="tog-appt" onclick="toggleRow(this)">
+        <div class="toggle-info">
+          <div class="toggle-name">Schedule a Time Slot</div>
+          <div class="toggle-sub">We'll arrange your preferred appointment</div>
+        </div>
+        <div class="sw"></div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:16px;">
+      <label class="field-label">Notes <span class="hint">(optional)</span></label>
+      <textarea class="inp" id="fnotes" rows="2" placeholder="Any symptoms, preferred time, extra details…" style="resize:vertical;"></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="review-box" class="review-block"></div>
+
+    <label class="check-row" onclick="toggleCB('cb1')">
+      <input type="checkbox" id="cb1">
+      <div class="cbox"></div>
+      <span class="check-text">The information I've provided is accurate and correct.</span>
+    </label>
+    <label class="check-row" onclick="toggleCB('cb2')">
+      <input type="checkbox" id="cb2">
+      <div class="cbox"></div>
+      <span class="check-text">I agree to <a href="#">AutoViindu's service terms and conditions</a>.</span>
+    </label>
+    <div class="err-banner" id="err-terms">Please agree to both checkboxes to proceed</div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goStep(2)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+        Back
+      </button>
+      <button class="btn-submit" id="submit-btn" onclick="submitForm()">
+        <span id="submit-label">Submit Request
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;display:inline-block;vertical-align:middle;margin-left:2px;" stroke-linecap="round"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ SUCCESS ══ -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-ring">
+      <svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5" width="28" height="28" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <div class="success-eyebrow">Request Received</div>
+    <div class="success-title">You're All Set!</div>
+    <p class="success-sub">Our team will call you within <strong>1 hour</strong> to confirm your booking and discuss all details.</p>
+    <div class="ref-box">
+      <div class="ref-label">Your Reference Number</div>
+      <div class="ref-num" id="ref-num">AV-000000</div>
+    </div>
+    <br>
+    <div class="contact-box">
+      <strong>+977-9701076240</strong><br>
+      Newroad, Kathmandu &nbsp;&bull;&nbsp; Mon–Sat, 9am–6pm
+    </div>
+    <br>
+    <button class="btn-reset" onclick="resetForm()">Submit Another Request</button>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div style="background:#080C14;color:rgba(255,255,255,.25);padding:20px 0;text-align:center;font-size:12px;font-family:'Outfit',sans-serif;">
+  &copy; 2025 AutoViindu Pvt. Ltd. &nbsp;&bull;&nbsp; Kathmandu, Nepal &nbsp;&bull;&nbsp; Your trust, our commitment
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL';
+
+let state = {
+  serviceCategory:'', urgency:'This week',
+  fuelType:'', brand:'', model:'', year:'', regNumber:'',
+  fullName:'', mobile:'', address:'',
+  pickupRequired:'No', appointmentNeeded:'No', notes:''
+};
+let currentStep = 1;
+
+/* HAPTIC — exact patterns from main site */
+function haptic(type) {
+  if (!navigator.vibrate) return;
+  if (type === 'select')  navigator.vibrate(8);
+  else if (type === 'nav') navigator.vibrate(6);
+  else if (type === 'error') navigator.vibrate([18,8,18]);
+  else if (type === 'success') navigator.vibrate([10,6,10,6,40]);
+  else navigator.vibrate(6);
+}
+
+function selectSvc(el) {
+  el.classList.toggle('sel');
+  el.classList.add('bounce');
+  setTimeout(() => el.classList.remove('bounce'), 300);
+  haptic('select');
+  const sel = [...document.querySelectorAll('#svc-grid .svc-card.sel')].map(e => e.dataset.val);
+  state.serviceCategory = sel.join(', ');
+  hide('err-svc');
+}
+
+function setUrgency(val) {
+  haptic('select');
+  document.querySelectorAll('.urg-opt').forEach(o => o.className = 'urg-opt');
+  const map = { Immediate:['urg-now','sel-now'], 'This week':['urg-soon','sel-soon'], Planning:['urg-plan','sel-plan'] };
+  const [id, cls] = map[val];
+  document.getElementById(id).classList.add(cls);
+  state.urgency = val;
+}
+
+function selectChip(el) {
+  const group = el.dataset.group;
+  document.querySelectorAll(`.chip[data-group="${group}"]`).forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  el.classList.add('bounce');
+  setTimeout(() => el.classList.remove('bounce'), 300);
+  haptic('select');
+  if (group === 'fuel') { state.fuelType = el.dataset.val; hide('err-fuel'); }
+}
+
+function toggleRow(el) {
+  el.classList.toggle('on');
+  haptic('select');
+  if (el.id === 'tog-pickup') state.pickupRequired = el.classList.contains('on') ? 'Yes' : 'No';
+  if (el.id === 'tog-appt')   state.appointmentNeeded = el.classList.contains('on') ? 'Yes' : 'No';
+}
+
+function toggleCB(id) {
+  const cb = document.getElementById(id);
+  cb.checked = !cb.checked;
+  haptic('select');
+}
+
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  haptic('nav');
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('step-' + n);
+  if (panel) panel.classList.add('active');
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById('pd-' + i);
+    dot.classList.remove('active', 'done');
+    if (i < n) dot.classList.add('done');
+    else if (i === n) dot.classList.add('active');
+  }
+  const fills = [0, 50, 100];
+  document.getElementById('prog-fill').style.width = fills[n - 1] + '%';
+  currentStep = n;
+  if (n === 3) buildReview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateStep(n) {
+  let ok = true;
+  if (n === 1) {
+    if (!state.serviceCategory) { show('err-svc'); ok = false; } else hide('err-svc');
+  }
+  if (n === 2) {
+    if (!state.fuelType)  { show('err-fuel');  ok = false; } else hide('err-fuel');
+    const brand = v('vbrand');
+    if (!brand)           { show('err-brand'); ok = false; } else { hide('err-brand'); state.brand = brand; }
+    const model = v('vmodel').trim();
+    if (!model)           { show('err-model'); ok = false; } else { hide('err-model'); state.model = model; }
+    state.year = v('vyear');
+    state.regNumber = v('vreg').toUpperCase();
+  }
+  if (!ok) haptic('error');
+  return ok;
+}
+
+function buildReview() {
+  state.notes = v('fnotes');
+  const vehicle = [state.brand, state.model, state.year, state.fuelType].filter(Boolean).join(' · ');
+  const rows = [
+    ['Service', state.serviceCategory || '—'],
+    ['Urgency', state.urgency],
+    ['Vehicle', vehicle || '—'],
+    ['Pickup',  state.pickupRequired],
+    ['Slot',    state.appointmentNeeded],
+  ].filter(r => r[1] && r[1] !== '—');
+  document.getElementById('review-box').innerHTML = rows.map(([k, val]) =>
+    `<div class="review-row"><span class="review-key">${k}</span><span class="review-val">${val}</span></div>`
+  ).join('');
+}
+
+async function submitForm() {
+  const name = v('fname').trim();
+  const mob  = v('fmobile').trim();
+  const addr = v('faddress').trim();
+  let ok = true;
+  if (!name)              { show('err-fname');   ok = false; } else hide('err-fname');
+  if (!mob||mob.length<10){ show('err-fmobile'); ok = false; } else hide('err-fmobile');
+  if (!addr)              { show('err-faddress');ok = false; } else hide('err-faddress');
+  if (!document.getElementById('cb1').checked||!document.getElementById('cb2').checked) { show('err-terms'); ok = false; } else hide('err-terms');
+  if (!ok) { haptic('error'); return; }
+
+  state.fullName = name; state.mobile = mob; state.address = addr; state.notes = v('fnotes');
+  const ref = 'AV-' + Date.now().toString().slice(-6);
+  const payload = { ...state, ref, timestamp: new Date().toLocaleString('en-GB',{timeZone:'Asia/Kathmandu'}) };
+
+  const btn = document.getElementById('submit-btn');
+  btn.classList.add('loading');
+  document.getElementById('submit-label').innerHTML = '<span class="spin">↻</span> Submitting…';
+
+  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL') {
+    try { await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); }
+    catch(e){ console.warn('Sheets error:',e); }
+  } else {
+    await new Promise(r => setTimeout(r, 900));
+    console.log('DEMO payload:', payload);
+  }
+
+  haptic('success');
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('ref-num').textContent = ref;
+  document.getElementById('success-screen').classList.add('show');
+  document.getElementById('prog-fill').style.width = '100%';
+  for (let i=1;i<=3;i++){const d=document.getElementById('pd-'+i);d.classList.remove('active');d.classList.add('done');}
+}
+
+function resetForm() {
+  state = {serviceCategory:'',urgency:'This week',fuelType:'',brand:'',model:'',year:'',regNumber:'',fullName:'',mobile:'',address:'',pickupRequired:'No',appointmentNeeded:'No',notes:''};
+  document.getElementById('success-screen').classList.remove('show');
+  document.querySelectorAll('.svc-card').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.urg-opt').forEach(o=>o.className='urg-opt');
+  document.getElementById('urg-soon').classList.add('sel-soon');
+  document.querySelectorAll('.toggle-row').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false);
+  document.querySelectorAll('.inp').forEach(i=>{if(i.tagName==='INPUT'||i.tagName==='TEXTAREA')i.value='';if(i.tagName==='SELECT')i.selectedIndex=0;});
+  document.getElementById('submit-btn').classList.remove('loading');
+  document.getElementById('submit-label').innerHTML='Submit Request <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;display:inline-block;vertical-align:middle;" stroke-linecap="round"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>';
+  document.getElementById('prog-fill').style.width='0%';
+  for(let i=1;i<=3;i++){const d=document.getElementById('pd-'+i);d.classList.remove('done','active');if(i===1)d.classList.add('active');}
+  currentStep=1;
+  document.getElementById('step-1').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function v(id)   {return document.getElementById(id)?.value||'';}
+function show(id){const e=document.getElementById(id);if(e)e.style.display='block';}
+function hide(id){const e=document.getElementById(id);if(e)e.style.display='none';}
+</script>
+</body>
+</html>
